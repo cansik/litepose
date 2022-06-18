@@ -81,19 +81,27 @@ def main():
     torch.backends.cudnn.deterministic = cfg.CUDNN.DETERMINISTIC
     torch.backends.cudnn.enabled = cfg.CUDNN.ENABLED
 
+    arch_manager = ArchManager(cfg)
+    cfg_arch = arch_manager.fixed_sample()
+
+    is_super = False
+
     if cfg.MODEL.NAME == 'pose_mobilenet' or cfg.MODEL.NAME == 'pose_simplenet':
-        arch_manager = ArchManager(cfg)
-        cfg_arch = arch_manager.fixed_sample()
         if fixed_arch is not None:
             cfg_arch = fixed_arch
-        model = lib.models.pose_mobilenet.get_pose_net(cfg, is_train=True, cfg_arch=cfg_arch)
+
+        if cfg.MODEL.NAME == 'pose_mobilenet':
+            model = lib.models.pose_mobilenet.get_pose_net(cfg, is_train=True, cfg_arch=cfg_arch)
+        else:
+            model = lib.models.pose_simplenet.get_pose_net(cfg, is_train=True, cfg_arch=cfg_arch)
+
         # model = eval('models.' + cfg.MODEL.NAME + '.get_pose_net')(
         #     cfg, is_train=True, cfg_arch=cfg_arch
         # )
     else:
-        model = eval('models.' + cfg.MODEL.NAME + '.get_pose_net')(
-            cfg, is_train=True
-        )
+        is_super = True
+        if cfg.MODEL.NAME == "pose_supermobilenet":
+            model = lib.models.pose_supermobilenet.get_pose_net(cfg, is_train=True)
 
     # set super config
     if cfg.MODEL.NAME == 'pose_supermobilenet':
@@ -124,9 +132,18 @@ def main():
 
     print(model)
 
-    print("exporting...")
-    dummy_input = Variable(torch.randn(1, 3, 256, 256))
-    torch.onnx.export(model, dummy_input, f"LitePose-Auto-XS.onnx")
+    dataset_test_name = cfg["DATASET"]["DATASET_TEST"].replace("_", "-").lower()
+    checkpoint_name = os.path.basename(cfg.TEST.MODEL_FILE).replace(".pth.tar", "").lower()
+    model_name = f"{checkpoint_name}-{dataset_test_name}"
+    image_size = cfg_arch["img_size"]
+
+    if is_super:
+        model_name += "-super"
+
+    print(f"exporting {model_name} ({image_size}x{image_size})...")
+
+    dummy_input = Variable(torch.randn(1, 3, image_size, image_size))
+    torch.onnx.export(model, dummy_input, f"models/{model_name}.onnx")
     print("done")
 
     if cfg.MODEL.NAME == 'pose_hourglass':

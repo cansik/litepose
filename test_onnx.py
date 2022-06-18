@@ -8,7 +8,7 @@ import cv2
 def parse_args():
     parser = argparse.ArgumentParser(description="Example inferencing")
 
-    parser.add_argument("--model", help="Path to onnx model", default="models/LitePose-Auto-XS.onnx", type=str)
+    parser.add_argument("--model", help="Path to onnx model", default="models/litepose-auto-xs-crowd-pose.onnx", type=str)
     parser.add_argument("--image", help="Path to image file", default="media/pexels-jansel-ferma-3152430.jpg", type=str)
     return parser.parse_args()
 

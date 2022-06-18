@@ -129,6 +129,14 @@ def main():
     torch.onnx.export(model, dummy_input, f"LitePose-Auto-XS.onnx")
     print("done")
 
+    if cfg.MODEL.NAME == 'pose_hourglass':
+        print("no mean and std needed!")
+    else:
+        mean = [0.485, 0.456, 0.406]
+        std = [0.229, 0.224, 0.225]
+
+        print(f"normalize input with mean: {mean} and std: {std}")
+
 
 if __name__ == '__main__':
     main()

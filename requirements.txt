@@ -13,4 +13,7 @@ munkres
 tqdm
 ptflops
 pycocotools
+
 onnx
+onnxruntime; platform_system != "Darwin" and platform.machine != "arm64"
+onnxruntime-silicon; platform_system == "Darwin" and platform.machine == "arm64"

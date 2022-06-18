@@ -3,5 +3,5 @@ venv*
 .DS_Store
 *.pyc
 checkpoints/*.tar
-*.onnx
 *.log
+*.onnx

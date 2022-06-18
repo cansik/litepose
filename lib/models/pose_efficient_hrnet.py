@@ -9,7 +9,7 @@ import logging
 import torch
 import torch.nn as nn
 import math
-from models.layers.efficient_blocks import conv_bn_act, SamePadConv2d, Flatten, SEModule, DropConnect, conv, conv_dw_no_bn,conv, conv_bn, conv_pw
+from lib.models.layers.efficient_blocks import conv_bn_act, SamePadConv2d, Flatten, SEModule, DropConnect, conv, conv_dw_no_bn,conv, conv_bn, conv_pw
 
 BN_MOMENTUM = 0.1
 logger = logging.getLogger(__name__)

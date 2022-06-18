@@ -12,3 +12,5 @@ cffi
 munkres
 tqdm
 ptflops
+pycocotools
+onnx

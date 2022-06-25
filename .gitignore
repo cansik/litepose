@@ -5,3 +5,6 @@ venv*
 checkpoints/**/*.tar
 *.log
 *.onnx
+*.xml
+*.bin
+*.mapping
